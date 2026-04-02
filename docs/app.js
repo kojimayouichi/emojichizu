@@ -39,10 +39,10 @@ navigator.geolocation?.getCurrentPosition(
     userLat = pos.coords.latitude;
     userLng = pos.coords.longitude;
     map.setView([userLat, userLng], 6);
-    statusEl.textContent = '';
   },
   () => {
-    statusEl.textContent = '位置情報を取得できませんでした（地図中央から送ります）';
+    statusEl.textContent = '位置情報を取得できませんでした';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
   },
   { timeout: 8000 }
 );
@@ -56,38 +56,14 @@ emojisRef.once('value', (snapshot) => {
   });
 });
 
-// --- 絵文字1文字バリデーション ---
-function isOneEmoji(str) {
-  if (!str) return false;
-  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
-    return [...new Intl.Segmenter().segment(str)].length === 1;
-  }
-  return [...str].length === 1;
-}
-
-// --- 入力: 常に最後の1文字だけ残す ---
-const input = document.getElementById('emoji-input');
-const sendBtn = document.getElementById('send-btn');
-
-input.addEventListener('input', () => {
-  const val = input.value;
-  if (!val) return;
-  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
-    const graphemes = [...new Intl.Segmenter().segment(val)].map((s) => s.segment);
-    if (graphemes.length > 1) input.value = graphemes[graphemes.length - 1];
-  } else {
-    const chars = [...val];
-    if (chars.length > 1) input.value = chars[chars.length - 1];
-  }
+// --- 絵文字グリッドのタップで即送信 ---
+document.getElementById('emoji-grid').addEventListener('click', (e) => {
+  const btn = e.target.closest('.e');
+  if (!btn) return;
+  send(btn.textContent.trim());
 });
 
-function send() {
-  const emoji = input.value.trim();
-  if (!isOneEmoji(emoji)) {
-    statusEl.textContent = '絵文字を1つだけ入力してください';
-    return;
-  }
-
+function send(emoji) {
   const center = map.getCenter();
   const lat = userLat ?? center.lat;
   const lng = userLng ?? center.lng;
@@ -99,17 +75,8 @@ function send() {
     ts: firebase.database.ServerValue.TIMESTAMP,
   });
 
-  // 送信者が一定時間後に削除
   setTimeout(() => newRef.remove(), DISPLAY_MS + 500);
-
-  input.value = '';
-  statusEl.textContent = '';
 }
-
-sendBtn.addEventListener('click', send);
-input.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') send();
-});
 
 // --- Firebase リアルタイム受信 ---
 emojisRef.on('child_added', (snapshot) => {
