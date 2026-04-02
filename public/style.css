@@ -33,7 +33,11 @@ html, body {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding-bottom: 24px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: 400px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 #input-area {
@@ -41,9 +45,12 @@ html, body {
   gap: 8px;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 40px;
   padding: 8px 12px;
+  width: 100%;
+  justify-content: center;
 }
 
 #emoji-input {
@@ -54,7 +61,7 @@ html, body {
   font-size: 28px;
   width: 60px;
   text-align: center;
-  caret-color: rgba(255,255,255,0.5);
+  caret-color: rgba(255, 255, 255, 0.5);
 }
 
 #send-btn {
@@ -63,17 +70,16 @@ html, body {
   border-radius: 20px;
   color: white;
   font-size: 14px;
-  padding: 6px 16px;
+  padding: 8px 20px;
   cursor: pointer;
   transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-#send-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
-}
-
+#send-btn:hover,
 #send-btn:active {
-  background: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 #status {
@@ -81,6 +87,7 @@ html, body {
   color: rgba(255, 255, 255, 0.35);
   min-height: 16px;
   letter-spacing: 0.05em;
+  text-align: center;
 }
 
 /* 絵文字マーカー */
@@ -90,28 +97,13 @@ html, body {
   pointer-events: none;
   user-select: none;
   animation: floatUp 8s ease-out forwards;
-  transform-origin: center bottom;
-  filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
 }
 
 @keyframes floatUp {
-  0% {
-    opacity: 0;
-    transform: translateY(0px) scale(0.5);
-  }
-  10% {
-    opacity: 1;
-    transform: translateY(-6px) scale(1.1);
-  }
-  20% {
-    transform: translateY(-10px) scale(1);
-  }
-  70% {
-    opacity: 0.85;
-    transform: translateY(-28px) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-44px) scale(0.8);
-  }
+  0%   { opacity: 0; transform: translateY(0)   scale(0.5); }
+  10%  { opacity: 1; transform: translateY(-6px) scale(1.1); }
+  20%  {             transform: translateY(-10px) scale(1);  }
+  70%  { opacity: 0.85; transform: translateY(-28px) scale(1); }
+  100% { opacity: 0; transform: translateY(-44px) scale(0.8); }
 }
