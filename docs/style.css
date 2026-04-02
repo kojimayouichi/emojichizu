@@ -23,7 +23,7 @@ html, body {
   filter: brightness(0.55) saturate(0.6) hue-rotate(180deg);
 }
 
-/* 下部UI */
+/* 下部UI — 背景は完全不透明にしてLeafletのタッチ横取りを防ぐ */
 #ui {
   position: fixed;
   bottom: 0;
@@ -33,38 +33,40 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, rgba(10,10,20,0.85) 70%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  gap: 6px;
+  padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(12, 12, 24, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* 絵文字グリッド */
+/* 絵文字グリッド — 3行分を表示、縦スクロール可 */
 #emoji-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  justify-content: center;
-  max-width: 480px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
   width: 100%;
+  max-width: 440px;
+  max-height: 186px; /* 約3行 */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .e {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
-  font-size: 22px;
-  width: 44px;
-  height: 44px;
+  font-size: 26px;
+  width: 100%;
+  aspect-ratio: 1;
+  min-width: 0;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
+  transition: background 0.12s, transform 0.08s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 
 .e:hover {
@@ -72,8 +74,8 @@ html, body {
 }
 
 .e:active {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(0.88);
+  background: rgba(255, 255, 255, 0.32);
+  transform: scale(0.84);
 }
 
 #status {
